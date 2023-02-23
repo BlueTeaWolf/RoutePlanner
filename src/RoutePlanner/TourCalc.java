@@ -14,18 +14,16 @@ public class TourCalc {
     private HashMap<Location, HashMap<Location, Double>> graph = new HashMap<>();
     //    private List<Location> locations;
     private HashMap<String, Location> locations = new HashMap<>();
-    private HashMap<Location, Double> path;
 
     public void makeGraph(FileReader fileReader) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String line;
 
         while ((line = bufferedReader.readLine()) != null) {
-
             line = line.replace("(", ",");
             line = line.replace(")", "");
 
-            line = line.replaceAll(" ","");
+            line = line.replaceAll(" ", "");
 
             String[] values = line.split(",");
 
@@ -35,30 +33,66 @@ public class TourCalc {
                 location.addConnection(values[i]);
             }
         }
-
         calculateDistance();
 
     }
 
     private void calculateDistance() {
         double x1, x2, y1, y2, distance;
+//
+//        for (String s : locations.keySet()) {
+//            Location location = locations.get(s);
+//            List<String> connections = location.getConnections();
+//            x1 = location.getX();
+//            y1 = location.getY();
+//            for (String locName : connections) {
+//                Location loc = locations.get(locName);
+//                x2 = loc.getX();
+//                y2 = loc.getY();
+//                distance = Point2D.distance(x1, y1, x2, y2);
+//                HashMap<Location, Double> innerMap = new HashMap<>();
+//                innerMap.put(loc, distance);
+//                graph.put(location, innerMap);
+//                System.out.println("Loc1: " + location.getLocationName() + " Loc2: " + loc.getLocationName() + " distance: " + distance);
+//            }
+//        }
 
         for (String s : locations.keySet()) {
             Location location = locations.get(s);
             List<String> connections = location.getConnections();
             x1 = location.getX();
             y1 = location.getY();
-            //Change name of connections
+            HashMap<Location, Double> innerMap = new HashMap<>();
             for (String locName : connections) {
                 Location loc = locations.get(locName);
-                x2 = loc.getX();
-                y2 = loc.getY();
-                distance = Point2D.distance(x1,y1,x2,y2);
-                HashMap<Location, Double> innerMap = new HashMap<>();
-                innerMap.put(loc,distance);
-                graph.put(location,innerMap);
+                try {
+                    x2 = loc.getX();
+                    y2 = loc.getY();
+                } catch (NullPointerException nullPointerException) {
+                    System.out.println("There is a problem with the Graph!\n " +
+                            "Maybe their is no connection to the asked points or a problem in the graph");
+                    break;
+                }
+                distance = Point2D.distance(x1, y1, x2, y2);
+                innerMap.put(loc, distance);
+                System.out.println("Loc1: " + location.getLocationName() + " Loc2: " + loc.getLocationName() + " distance: " + distance);
             }
+            graph.put(location, innerMap);
         }
+//        System.out.println(graph.get(locations.get("E")).get(locations.get("G")));
+//        System.out.println("-------");
+//
+//        for (Location source : graph.keySet()) {
+//            System.out.print(source + " is connected to: ");
+//            for (Map.Entry<Location, Double> entry : graph.get(source).entrySet()) {
+//                Location destination = entry.getKey();
+//                Double weight = entry.getValue();
+//                System.out.print(destination + "(" + weight + "), ");
+//            }
+//            System.out.println();
+//        }
+//
+//        System.out.println("------");
     }
 
     //With the use of the dijkstra algorithm
@@ -67,31 +101,25 @@ public class TourCalc {
         Location start = locations.get(startName);
         Location dest = locations.get(destName);
 
-        // Create a priority queue to keep track of the next closest Location
         Map<Location, Double> distances = new HashMap<>();
         PriorityQueue<Location> queue = new PriorityQueue<>();
         queue.offer(start);
 
-        // Create a map to keep track of the shortest distances to each Location
         distances.put(start, 0.0);
 
-        // Create a map to keep track of the previous Location in the shortest path
         Map<Location, Location> previous = new HashMap<>();
 
-        // Loop through the queue until it's empty or the destination is found
         while (!queue.isEmpty()) {
             Location current = queue.poll();
             if (current == dest) {
                 break;
             }
 
-            // Loop through the neighbors of the current Location
             for (Map.Entry<Location, Double> entry : graph.get(current).entrySet()) {
                 Location neighbor = entry.getKey();
                 double distance = entry.getValue();
                 double totalDistance = distances.get(current) + distance;
 
-                // Update the distance to the neighbor if it's shorter than the current distance
                 if (!distances.containsKey(neighbor) || totalDistance < distances.get(neighbor)) {
                     distances.put(neighbor, totalDistance);
                     previous.put(neighbor, current);
@@ -100,7 +128,6 @@ public class TourCalc {
             }
         }
 
-        // Build the shortest path by following the previous map from the destination to the start
         List<Location> path = new ArrayList<>();
         Location current = dest;
         while (current != null) {
@@ -108,7 +135,6 @@ public class TourCalc {
             current = previous.get(current);
         }
 
-        // If there's no path to the destination, return an empty list
         if (path.isEmpty() || path.get(0) != start) {
             return new ArrayList<>();
         }
@@ -116,7 +142,11 @@ public class TourCalc {
         return path;
     }
 
-    private double getEuclideanDistance(Location a, Location b) {
+    public double getEuclideanDistance(String firstPoint, String secondPoint) {
+
+        Location a = locations.get(firstPoint);
+        Location b = locations.get(secondPoint);
+
         double dx = a.getX() - b.getX();
         double dy = a.getY() - b.getY();
         return Math.sqrt(dx * dx + dy * dy);
