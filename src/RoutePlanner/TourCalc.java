@@ -12,7 +12,6 @@ import java.util.*;
 public class TourCalc {
 
     private HashMap<Location, HashMap<Location, Double>> graph = new HashMap<>();
-    //    private List<Location> locations;
     private HashMap<String, Location> locations = new HashMap<>();
 
     public void makeGraph(FileReader fileReader) throws IOException {
@@ -39,23 +38,6 @@ public class TourCalc {
 
     private void calculateDistance() {
         double x1, x2, y1, y2, distance;
-//
-//        for (String s : locations.keySet()) {
-//            Location location = locations.get(s);
-//            List<String> connections = location.getConnections();
-//            x1 = location.getX();
-//            y1 = location.getY();
-//            for (String locName : connections) {
-//                Location loc = locations.get(locName);
-//                x2 = loc.getX();
-//                y2 = loc.getY();
-//                distance = Point2D.distance(x1, y1, x2, y2);
-//                HashMap<Location, Double> innerMap = new HashMap<>();
-//                innerMap.put(loc, distance);
-//                graph.put(location, innerMap);
-//                System.out.println("Loc1: " + location.getLocationName() + " Loc2: " + loc.getLocationName() + " distance: " + distance);
-//            }
-//        }
 
         for (String s : locations.keySet()) {
             Location location = locations.get(s);
@@ -79,25 +61,11 @@ public class TourCalc {
             }
             graph.put(location, innerMap);
         }
-//        System.out.println(graph.get(locations.get("E")).get(locations.get("G")));
-//        System.out.println("-------");
-//
-//        for (Location source : graph.keySet()) {
-//            System.out.print(source + " is connected to: ");
-//            for (Map.Entry<Location, Double> entry : graph.get(source).entrySet()) {
-//                Location destination = entry.getKey();
-//                Double weight = entry.getValue();
-//                System.out.print(destination + "(" + weight + "), ");
-//            }
-//            System.out.println();
-//        }
-//
-//        System.out.println("------");
     }
 
     //With the use of the dijkstra algorithm
     public List<Location> findShortestPath(String startName, String destName) {
-        // Find the starting and destination locations
+
         Location start = locations.get(startName);
         Location dest = locations.get(destName);
 
@@ -142,15 +110,16 @@ public class TourCalc {
         return path;
     }
 
-    public double getEuclideanDistance(String firstPoint, String secondPoint) {
 
-        Location a = locations.get(firstPoint);
-        Location b = locations.get(secondPoint);
-
-        double dx = a.getX() - b.getX();
-        double dy = a.getY() - b.getY();
-        return Math.sqrt(dx * dx + dy * dy);
-    }
+//    public double getEuclideanDistance(String firstPoint, String secondPoint) {
+//
+//        Location a = locations.get(firstPoint);
+//        Location b = locations.get(secondPoint);
+//
+//        double dx = a.getX() - b.getX();
+//        double dy = a.getY() - b.getY();
+//        return Math.sqrt(dx * dx + dy * dy);
+//    }
 
     public HashMap<Location, HashMap<Location, Double>> getGraph() {
         return graph;
