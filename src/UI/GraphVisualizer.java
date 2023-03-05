@@ -83,10 +83,10 @@ public class GraphVisualizer extends JPanel {
                 graphics.drawLine(x1, y1, x2, y2);
 
                 double distance = connections.get(connection);
-                String distanceStr = String.format("%.2f", distance);
+                String distanceString = String.format("%.2f", distance);
                 int labelX = (x1 + x2) / 2;
                 int labelY = (y1 + y2) / 2;
-                graphics.drawString(distanceStr, labelX, labelY);
+                graphics.drawString(distanceString, labelX, labelY);
             }
         }
 
@@ -122,8 +122,17 @@ public class GraphVisualizer extends JPanel {
 
     public void updateShortestPath(List<Location> shortestPath) {
         this.shortestPath = shortestPath;
-        this.allPaths.put(shortestPath.get(0).getLocationName()  + shortestPath.get(shortestPath.size() - 1).getLocationName(), shortestPath);
-        repaint();
+        try {
+            this.allPaths.put(shortestPath.get(0)
+                    .getLocationName() + shortestPath
+                    .get(shortestPath.size() - 1)
+                    .getLocationName(), shortestPath);
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            System.out.println(indexOutOfBoundsException +
+                    " in updateShortestPath - GraphVisualizer.\n" +
+                    "This is because there is no path or no connection to the points");
+        }
+            repaint();
     }
 
 }

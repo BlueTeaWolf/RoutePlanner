@@ -71,7 +71,12 @@ public class TourCalc {
 
         Map<Location, Double> distances = new HashMap<>();
         PriorityQueue<Location> queue = new PriorityQueue<>();
-        queue.offer(start);
+
+        try {
+            queue.offer(start);
+        } catch (NullPointerException nullPointerException) {
+            System.out.println("Location does not exist: " + nullPointerException + "in findShortestPath - TourCalc");
+        }
 
         distances.put(start, 0.0);
 
@@ -107,19 +112,18 @@ public class TourCalc {
             return new ArrayList<>();
         }
 
+        Location lastLoc = path.get(0);
+        double distance = 0;
+        for (int i = 1; i < path.size(); i++) {
+            Location currentLoc = path.get(i);
+            distance += graph.get(lastLoc).get(currentLoc);
+            lastLoc = currentLoc;
+        }
+        System.out.printf("Distance to destination: %fkm \n", distance);
         return path;
     }
 
 
-//    public double getEuclideanDistance(String firstPoint, String secondPoint) {
-//
-//        Location a = locations.get(firstPoint);
-//        Location b = locations.get(secondPoint);
-//
-//        double dx = a.getX() - b.getX();
-//        double dy = a.getY() - b.getY();
-//        return Math.sqrt(dx * dx + dy * dy);
-//    }
 
     public HashMap<Location, HashMap<Location, Double>> getGraph() {
         return graph;
