@@ -33,7 +33,6 @@ public class TourCalc {
             }
         }
         calculateDistance();
-
     }
 
     private void calculateDistance() {

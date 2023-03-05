@@ -2,7 +2,6 @@ import UI.GraphVisualizer;
 import RoutePlanner.Location;
 import RoutePlanner.TourCalc;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,7 +14,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         TourCalc tourCalc = new TourCalc();
-        FileReader fileReader = new FileReader("src/resources/Map");
+        FileReader fileReader = new FileReader("src/resources/StadtPunkte");
 //        FileReader fileReader = new FileReader(new File("src/resources/TestMap"));
 
         tourCalc.makeGraph(fileReader);
